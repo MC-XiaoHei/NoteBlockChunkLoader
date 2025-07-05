@@ -1,0 +1,10 @@
+{
+  "required": true,
+  "minVersion": "0.8.7",
+  "package": "cn.xor7.xiaohei.note_block_chunk_loader.mixin.mixins",
+  "compatibilityLevel": "JAVA_21",
+  "target": "@env(PREINIT)",
+  "server": [
+    "NoteBlockMixin"
+  ]
+}

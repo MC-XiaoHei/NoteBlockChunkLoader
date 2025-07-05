@@ -1,75 +1,46 @@
-# Leaves Plugin Template
+# NoteBlockChunkLoader
 
-[![许可证](https://img.shields.io/github/license/LeavesMC/leaves-plugin-template)](LICENSE)
+[![许可证](https://img.shields.io/github/license/MC-XiaoHei/NoteBlockChunkLoader)](LICENSE)
 
-一个帮助你快速开始 Leaves 插件开发的项目模板
-
-**:warning: 当前仅支持 [Gradle](https://gradle.org/)**
+添加了类似 Carpet AMS Addition 的音符盒加载器
 
 ## 特性
 
-- 在构建脚本中声明插件元数据
-- 开箱即用的 [Mixin](https://github.com/FabricMC/Mixin)，[Mixin Extras](https://github.com/LlamaLad7/MixinExtras)，[AccessWidener](https://github.com/FabricMC/access-widener)
-- 快速启动开发服务器
+- 当上边沿红石信号激活音符盒时为所在区块添加加载票
+- 可配置的触发条件（音符盒顶部方块类型，底部方块类型）
+- 可配置的加载范围
 
-## 依赖
+## 注意事项
 
-此模板需要 JDK 21 或更高版本
+本插件依赖 Mixin 功能，你需要在服务器启动脚本中加入 `-Dleavesclip.enable.mixin=true`
 
-## 快速开始
+## 配置文件
 
-1. **克隆本模板：**
+```yaml
+# 加载范围，单位为区块
+load-radius: 3
 
-   ```bash
-   git clone https://github.com/LeavesMC/leaves-plugin-template.git
-   ```
+# 由于在服务器当前维度没有玩家的 300tick 后，Minecraft 会停止实体相关的更新，
+# 因此每当当前维度中没有玩家时使用该规则加载的区块中漏斗将会停止工作，
+# 将该配置项设置为 true 可以避免这种情况。
+keep-world-tick-update: false
 
-2. **配置项目**
+# 上升沿红石信号激活音符盒时，若音符盒顶部方块不为此方块，则不加载所在区块
+load-when-above-block-is: wither_skeleton_skull
 
-   按照项目中的 `// TODO` 注释完成对应内容，并根据你的插件需求修改 `src/mixin/resources` 下的 `leaves-template-plugin.accesswidener` 与 `leaves-template-plugin.mixins.json` 文件
-
-3. **编写插件 ：**
-
-   在 `src/main` 模块下编写你的插件代码
-   在 `src/mixin` 模块下编写你的 Mixin 代码
-
-4. **构建插件：**
-
-   ```bash
-   ./gradlew build
-   ```
-
-   构建成功后，插件 JAR 文件会生成在 `build/libs` 目录下。
-
-5. **部署插件：**
-
-   将生成的 `.jar` 文件放入支持 Leaves 插件的服务器的 `plugins` 文件夹，并重启服务器。
+# 下降沿红石信号激活音符盒时，若音符盒底部方块不为此方块，则不加载所在区块
+load-when-below-block-is: any
+```
 
 ## 常见问题
 
-**用此模板开发的插件可以用于哪些服务端？**
+**此插件可以用于哪些服务端？**
 
 目前只有 [Leaves](https://github.com/LeavesMC/Leaves)
 
-**什么是 Mixin？**
+**为什么插件不起作用？**
 
-参考 [Fabric 教程：Mixin 介绍](https://wiki.fabricmc.net/zh_cn:tutorial:mixin_introduction)
-
-**什么是 Mixin Extras？**
-
-参考 [GitHub：Mixin Extras](https://github.com/LlamaLad7/MixinExtras)
-
-（本模板已配置，无需额外操作）
-
-**什么是 AccessWidener？**
-
-参考 [Fabric 教程：访问加宽器](https://wiki.fabricmc.net/zh_cn:tutorial:accesswideners)
-
-**为什么 Mixin 不起作用？**
-
-Leavesclip 默认禁用了 Mixin 功能。你需要在服务器启动脚本中加入 `-Dleavesclip.enable.mixin=true`
-
-模板中附带的开发服务器已默认启用 Mixin，无需额外设置。
+见注意事项，确保在服务器启动脚本中加入了 `-Dleavesclip.enable.mixin=true`。
 
 ## 贡献
 

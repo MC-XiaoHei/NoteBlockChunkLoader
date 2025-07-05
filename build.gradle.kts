@@ -15,52 +15,25 @@ plugins {
     alias(libs.plugins.shadowJar)
     alias(libs.plugins.runPaper)
     alias(libs.plugins.resourceFactory)
-    alias(libs.plugins.accessWiden)
 }
 
-// TODO: change this to your plugin group
-group = "com.example"
-// TODO: change this to your plugin version
+group = "cn.xor7.xiaohei"
 version = "1.0.0-SNAPSHOT"
 
-// please check https://docs.papermc.io/paper/dev/plugin-yml/ and https://docs.papermc.io/paper/dev/getting-started/paper-plugins/
 val pluginJson = leavesPluginJson {
-    // INFO: name and version defaults to project name and version
-    // TODO: change this to your main class
-    main = "com.example.plugin.TemplatePlugin"
-    // TODO: change this to your name
-    authors.add("YourName")
-    // TODO: change this to your plugin description
-    description = "leaves template plugin"
-    // TODO: support or not is decided by you
+    main = "cn.xor7.xiaohei.note_block_chunk_loader.NoteBlockChunkLoader"
+    authors.add("MC_XiaoHei")
+    description = "添加了类似 Carpet AMS Addition 的音符盒加载器 "
     foliaSupported = false
     apiVersion = libs.versions.leavesApi.extractMCVersion()
-    // TODO: if your logic can work without mixin, can use `features.optional.add("mixin")`
     features.required.add("mixin")
     mixin.apply {
-        // TODO: replace this to your mixin package name
-        packageName = "com.example.plugin.mixin"
-        // TODO: replace this to your access widener file name
-        accessWidener = "leaves-template-plugin.accesswidener"
-        // TODO: replace this to your mixin configs name
-        mixins.add("leaves-template-plugin.mixins.json")
+        packageName = "cn.xor7.xiaohei.note_block_chunk_loader.mixin"
+        mixins.add("note-block-chunk-loader.mixins.json")
     }
-    // TODO: add your plugin dependencies
-    // please check https://docs.papermc.io/paper/dev/getting-started/paper-plugins/#dependency-declaration
-    // e.g.,
-    // dependencies.bootstrap(
-    //     name = "some deps",
-    //     load = LeavesPluginJson.Load.BEFORE // or AFTER
-    // )
 }
 
 val runServerPlugins = runPaper.downloadPluginsSpec {
-    // TODO: add plugins you want when run dev server
-    // e.g.,
-    // modrinth("carbon", "2.1.0-beta.21")
-    // github("jpenilla", "MiniMOTD", "v2.0.13", "minimotd-bukkit-2.0.13.jar")
-    // hangar("squaremap", "1.2.0")
-    // url("https://download.luckperms.net/1515/bukkit/loader/LuckPerms-Bukkit-5.4.102.jar")
 }
 
 repositories {
@@ -99,7 +72,7 @@ val mixinSourceSet: SourceSet = sourceSets["mixin"]
 
 dependencies {
     apply `plugin dependencies`@{
-        // TODO: your plugin deps here
+
     }
 
     apply `api and server source`@{
@@ -111,21 +84,11 @@ dependencies {
         compileOnly(mixinSourceSet.output)
         mixinSourceSet.apply {
             val compileOnly = compileOnlyConfigurationName
-            val annotationPreprocessor = annotationProcessorConfigurationName
 
-            annotationPreprocessor(libs.mixinExtras)
-            compileOnly(libs.mixinExtras)
             compileOnly(libs.spongeMixin)
-            compileOnly(libs.mixinCondition)
-            accessWiden(compileOnly(files(getMappedServerJar()))!!)
+            compileOnly(files(getMappedServerJar()))
         }
     }
-}
-
-accessWideners {
-    files.from(fileTree(mixinSourceSet.resources.srcDirs.first()) {
-        include("*.accesswidener")
-    })
 }
 
 tasks {
@@ -148,11 +111,6 @@ tasks {
 
     named<JavaCompile>("compileMixinJava") {
         dependsOn("paperweightUserdevSetup")
-        dependsOn(applyAccessWideners)
-    }
-
-    paperweightUserdevSetup {
-        finalizedBy(applyAccessWideners)
     }
 
     shadowJar {
